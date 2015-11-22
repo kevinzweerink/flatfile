@@ -1,0 +1,14 @@
+{
+  "name": "flatfiles",
+  "version": "1.0.0",
+  "description": "website for small canvas sketches",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kevin Zweerink",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.0"
+  }
+}

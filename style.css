@@ -1,0 +1,63 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	font-family: 'Work Sans', sans-serif;
+	color: #333;
+}
+
+.item {
+	position: relative;
+	margin-top: 4rem;
+}
+
+h1 {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	top: -1.3rem;
+	left: 3rem;
+	right: 3rem;
+}
+
+h2 {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	top: 30vh;
+	left: 3rem;
+}
+
+canvas {
+	width : 100vw;
+	height : 100vh;
+	z-index: 1;
+	margin: 0;
+	display: block;
+}
+
+header div {
+	position: fixed;
+	z-index: 999;
+	letter-spacing: 5px;
+}
+
+.tl {
+	top :1rem;
+	left: 1rem;
+}
+
+.tr {
+	top: 1rem;
+	right: 1rem;
+}
+
+.bl {
+	bottom: 1rem;
+	left: 1rem;
+}
+
+.br {
+	bottom: 1rem;
+	right: 1rem;
+}
+
