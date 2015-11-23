@@ -38,7 +38,7 @@ function sketch_0004() {
 		  'uniform float time;',
 		  'uniform float width;',
 		  'uniform float height;',
-		  'uniform float walker;',
+		  'float rand_seed = 1.0;',
 		  'float cx = width / 2.0;',
 		  'float cy = height / 2.0;',
 		  'float distBetween(vec2 a, vec2 b) {',
@@ -46,11 +46,18 @@ function sketch_0004() {
 		  	'float oy = a.y - b.y;',
 		  	'return sqrt( (ox*ox) + (oy*oy) );',
 	  	'}',
+	  	'float rand( float n ) {',
+	  		'return fract(sin(n) * 43758.5453123);',
+	  	'}',
+			'float rand_noise() {',
+				'rand_seed += 1.0;',
+				'return rand(rand_seed);',
+			'}',
 		  'void main() {',
 		  	'vec4 coord = gl_FragCoord;',
 		  	'float distFromCenter = distBetween(gl_FragCoord.xy, vec2(cx, cy));',
 		  	'float relativeDist = cos(distFromCenter / 10.0) / 2.0 + 2.0;',
-    		'gl_FragColor = vec4(relativeDist * (coord.x / width), relativeDist * (coord.y / height), (time + 0.5), walker);',
+    		'gl_FragColor = vec4(relativeDist * (coord.x / width), relativeDist * (coord.y / height), time + 0.5, (rand(distFromCenter) / 10.0) + 0.9 );',
 		  '}'
 		].join('\n'))
 		gl.compileShader(fragmentShader)
@@ -80,7 +87,6 @@ function sketch_0004() {
 
 		this.program.width = gl.getUniformLocation(this.program, 'width');
 		this.program.height = gl.getUniformLocation(this.program, 'height');
-		this.program.walker = gl.getUniformLocation(this.program, 'walker');
 
 		gl.uniform1f(this.program.width, this.w);
 		gl.uniform1f(this.program.height, this.h);
@@ -137,9 +143,7 @@ function sketch_0004() {
 		this.program.position = gl.getAttribLocation(this.program, 'position');
 		gl.enableVertexAttribArray(this.program.position);
 		gl.vertexAttribPointer(this.program.position, 2, gl.FLOAT, false, 0, 0);
-
 		gl.uniform1f(this.program.time, (Math.sin(this.t / 100) * .25) + .5 );
-		gl.uniform1f(this.program.walker, this.walker);
 
 		gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2);
 
