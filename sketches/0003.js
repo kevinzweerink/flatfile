@@ -24,6 +24,7 @@ function sketch_0003() {
 	this.resolutionY = Math.floor((this.h / this.w) * this.resolutionX);
 
 	this.unit = this.w/this.resolutionX;
+	this.shouldReset = false;
 
 	this.createGrid = function () {
 		var x = 0,
@@ -124,15 +125,22 @@ function sketch_0003() {
 	}
 
 	this.advance = function () {
+		var generationalChange = 0;
 		for (var i = 0; i < this.cells.length; ++i) {
 			var cell = this.cells[i];
 			var numAlive = this.pollNeighbors(cell);
 
 			if (cell.live && (numAlive < 2 || numAlive > 3)) {
 				cell.live = false;
+				generationalChange++;
 			} else if (!cell.live && numAlive === 3) {
 				cell.live = true;
+				generationalChange++;
 			}
+		}
+
+		if (generationalChange === 0) {
+			this.shouldReset = true;
 		}
 	}
 
@@ -160,6 +168,11 @@ function sketch_0003() {
 			this.ticks = -1;
 		}
 
+		if (this.shouldReset) {
+			this.seed();
+			this.shouldReset = !this.shouldReset;
+		}
+
 		this.ticks++;
 	}
 
@@ -168,8 +181,6 @@ function sketch_0003() {
 		this.createGrid();
 		this.seed();
 	}
-
-	console.log(this.w, this.h);
 
 	this.init();
 	this.frame();

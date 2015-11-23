@@ -1,4 +1,4 @@
-var manifest = ['0001', '0002', '0003', '0004'];
+var manifest = ['0001', '0002', '0003', '0004', '0005'];
 
 function Blog(postIds, container) {
 	this.postIds = postIds;
