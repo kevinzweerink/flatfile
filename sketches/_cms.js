@@ -1,4 +1,4 @@
-var manifest = ['0001', '0002'];
+var manifest = ['0001', '0002', '0003'];
 
 function Blog(postIds, container) {
 	this.postIds = postIds;
@@ -51,6 +51,7 @@ Blog.prototype.frame = function () {
 	var index = (this.postVisualizations.length -1) - Math.round(document.body.scrollTop / this.itemHeight);
 	this.postVisualizations[index].frame();
 	window.requestAnimationFrame(this.frame.bind(this));
+	// window.addEventListener('click', this.frame.bind(this));
 }
 
 var b = new Blog(manifest, '.bloggle');
