@@ -540,7 +540,7 @@ function sketch_0004() {
 		  	'vec4 coord = gl_FragCoord;',
 		  	'float distFromCenter = distBetween(gl_FragCoord.xy, vec2(cx, cy));',
 		  	'float relativeDist = cos(distFromCenter / 10.0) / 2.0 + 2.0;',
-    		'gl_FragColor = vec4(relativeDist * (coord.x / width), relativeDist * (coord.y / height), time + 0.5, (rand(distFromCenter) / 10.0) + 0.9 );',
+    		'gl_FragColor = vec4((time/2.0 + 0.75) * (relativeDist * (coord.x / width)), (time/2.0 + 0.75) * (relativeDist * (coord.y / height)), time + 0.5, (rand(distFromCenter) / 10.0) + 0.9 );',
 		  '}'
 		].join('\n'))
 		gl.compileShader(fragmentShader)
