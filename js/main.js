@@ -482,6 +482,9 @@ function sketch_0003() {
 	return this;
 }
 function sketch_0004() {
+	// Works with node-brfs to compile shaders
+	
+
 	this.meta = {
 		title : 'Shader Test',
 		displayDate : '2015.11.23',
@@ -506,44 +509,15 @@ function sketch_0004() {
 		gl.clearColor(0,1,1,1);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 
+		var vSource = "attribute vec2 position;\nvoid main() {\n\tgl_Position = vec4(position, 0.0, 1.0);\n}";
 		var vertexShader = gl.createShader(gl.VERTEX_SHADER)
-		gl.shaderSource(vertexShader, [
-		  'attribute vec2 position;',
-		  'void main() {',
-		    'gl_Position = vec4(position, 0.0, 1.0);',
-		  '}'
-		].join('\n'))
+		gl.shaderSource(vertexShader, vSource);
 		gl.compileShader(vertexShader)
 
-		var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
-		gl.shaderSource(fragmentShader, [
-		  'precision highp float;',
-		  'uniform float time;',
-		  'uniform float width;',
-		  'uniform float height;',
-		  'float rand_seed = 1.0;',
-		  'float cx = width / 2.0;',
-		  'float cy = height / 2.0;',
-		  'float distBetween(vec2 a, vec2 b) {',
-		  	'float ox = a.x - b.x;',
-		  	'float oy = a.y - b.y;',
-		  	'return sqrt( (ox*ox) + (oy*oy) );',
-	  	'}',
-	  	'float rand( float n ) {',
-	  		'return fract(sin(n) * 43758.5453123);',
-	  	'}',
-			'float rand_noise() {',
-				'rand_seed += 1.0;',
-				'return rand(rand_seed);',
-			'}',
-		  'void main() {',
-		  	'vec4 coord = gl_FragCoord;',
-		  	'float distFromCenter = distBetween(gl_FragCoord.xy, vec2(cx, cy));',
-		  	'float relativeDist = cos(distFromCenter / 10.0) / 2.0 + 2.0;',
-    		'gl_FragColor = vec4((time/2.0 + 0.75) * (relativeDist * (coord.x / width)), (time/2.0 + 0.75) * (relativeDist * (coord.y / height)), time + 0.5, (rand(distFromCenter) / 10.0) + 0.9 );',
-		  '}'
-		].join('\n'))
-		gl.compileShader(fragmentShader)
+		var fSource = "precision highp float;\n\nuniform float time;\nuniform float width;\nuniform float height;\nfloat rand_seed = 1.0;\nfloat cx = width / 2.0;\nfloat cy = height / 2.0;\n\nfloat distBetween(vec2 a, vec2 b) {\n\tfloat ox = a.x - b.x;\n\tfloat oy = a.y - b.y;\n\treturn sqrt((ox * ox) + (oy * oy));\n}\n\nfloat seeded_rand(float n) {\n\treturn fract(sin(n) * 43758.5453123);\n}\n\nfloat rand() {\n\trand_seed += 1.0;\n\treturn fract(sin(rand_seed) * 43758.5453123);\n}\n\nvoid main() {\n\tvec4 coord = gl_FragCoord;\n\tfloat distFromCenter = distBetween( coord.xy, vec2(cx, cy) );\n\tfloat relativeDist = cos(distFromCenter / 10.0) / 2.0 + 2.0;\n\tgl_FragColor = vec4((time/2.0 + 0.75) * (relativeDist * (coord.x / width)), (time/2.0 + 0.75) * (relativeDist * (coord.y / height)), time + 0.5, (seeded_rand(distFromCenter) / 10.0) + 0.9 );\n}";
+		var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+		gl.shaderSource(fragmentShader, fSource);
+		gl.compileShader(fragmentShader);
 
 		this.program = gl.createProgram();
 		gl.attachShader(this.program, vertexShader);

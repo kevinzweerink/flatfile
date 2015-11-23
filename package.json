@@ -9,6 +9,11 @@
   "author": "Kevin Zweerink",
   "license": "ISC",
   "devDependencies": {
-    "gulp": "^3.9.0"
+    "brfs": "^1.4.1",
+    "gulp": "^3.9.0",
+    "gulp-brfs": "^0.1.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-replace-task": "^0.11.0",
+    "stringify": "^3.1.0"
   }
 }
