@@ -14,6 +14,8 @@ function sketch_0004() {
 	this.el.width = this.w;
 	this.el.height = this.h;
 	this.ctx = this.el.getContext('webgl');
+	this.t = 0;
+	this.walker = Math.random() / 3 + 0.6666;
 
 	this.doWebGL = function () {
 		var gl = this.ctx;
@@ -34,9 +36,21 @@ function sketch_0004() {
 		gl.shaderSource(fragmentShader, [
 		  'precision highp float;',
 		  'uniform float time;',
+		  'uniform float width;',
+		  'uniform float height;',
+		  'uniform float walker;',
+		  'float cx = width / 2.0;',
+		  'float cy = height / 2.0;',
+		  'float distBetween(vec2 a, vec2 b) {',
+		  	'float ox = a.x - b.x;',
+		  	'float oy = a.y - b.y;',
+		  	'return sqrt( (ox*ox) + (oy*oy) );',
+	  	'}',
 		  'void main() {',
 		  	'vec4 coord = gl_FragCoord;',
-	    	'gl_FragColor = vec4(coord.x / 1280.0, coord.y / 700.0, time + 0.5, 1.0);',
+		  	'float distFromCenter = distBetween(gl_FragCoord.xy, vec2(cx, cy));',
+		  	'float relativeDist = cos(distFromCenter / 10.0) / 2.0 + 2.0;',
+    		'gl_FragColor = vec4(relativeDist * (coord.x / width), relativeDist * (coord.y / height), (time + 0.5), walker);',
 		  '}'
 		].join('\n'))
 		gl.compileShader(fragmentShader)
@@ -64,7 +78,34 @@ function sketch_0004() {
 
 		this.program.time = gl.getUniformLocation(this.program, 'time');
 
+		this.program.width = gl.getUniformLocation(this.program, 'width');
+		this.program.height = gl.getUniformLocation(this.program, 'height');
+		this.program.walker = gl.getUniformLocation(this.program, 'walker');
+
+		gl.uniform1f(this.program.width, this.w);
+		gl.uniform1f(this.program.height, this.h);
+
+
 		gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2);
+	}
+
+	this.transitionWalker = function () {
+		var upper = 1;
+		var lower = 0.666;
+		var increment = 0.005;
+
+		if (this.walker >= upper) {
+			var flip = Math.round(Math.random());
+			this.walker = flip ? this.walker - increment : this.walker; 
+		} else if (this.walker <= lower) {
+			var flip = Math.round(Math.random());
+			this.walker = flip ? this.walker + increment : this.walker;
+		} else {
+			var shouldMove = Math.round(Math.random());
+			var direction = Math.round(Math.random());
+			if (!shouldMove) return;
+			this.walker = direction ? this.walker + increment : this.walker - increment;
+		}
 	}
 
 	this.frame = function () {
@@ -74,7 +115,9 @@ function sketch_0004() {
 		gl.clearColor(0,1,1,1);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 
-		var t = (Math.sin(new Date().getTime() / 1000) / 4) + 0.25;
+		this.t++;
+
+		this.transitionWalker();
 
 		var vertices = new Float32Array([
 			-1, -1,
@@ -95,7 +138,8 @@ function sketch_0004() {
 		gl.enableVertexAttribArray(this.program.position);
 		gl.vertexAttribPointer(this.program.position, 2, gl.FLOAT, false, 0, 0);
 
-		gl.uniform1f(this.program.time, t);
+		gl.uniform1f(this.program.time, (Math.sin(this.t / 100) * .25) + .5 );
+		gl.uniform1f(this.program.walker, this.walker);
 
 		gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2);
 
