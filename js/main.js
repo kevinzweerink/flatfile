@@ -318,12 +318,12 @@ function sketch_0003() {
 	this.el.height = this.h;
 	this.ctx = this.el.getContext('2d');
 
-	this.throttle = 3;
+	this.throttle = 1;
 	this.ticks = 0;
 
 	this.cells = [];
 
-	this.resolutionX = 100;
+	this.resolutionX = 200;
 	this.resolutionY = Math.floor((this.h / this.w) * this.resolutionX);
 
 	this.unit = this.w/this.resolutionX;
@@ -417,7 +417,7 @@ function sketch_0003() {
 		for (var i = 0; i < this.cells.length; ++i) {
 			this.cells[i].live = false;
 		}
-		
+
 		while (numToSeed > 0) {
 			var index = Math.floor(Math.random() * cellsAnalog.length);
 			this.cells[cellsAnalog[index]].live = true;
