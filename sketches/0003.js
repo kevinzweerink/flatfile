@@ -106,7 +106,7 @@ function sketch_0003() {
 	}
 
 	this.seed = function () {
-		var numToSeed = Math.floor(Math.random() * (this.cells.length/2));
+		var numToSeed = Math.floor(Math.random() * (this.cells.length/10));
 		var cellsAnalog = this.cells.map(function (c) {
 			return c.i;
 		});
