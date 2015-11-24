@@ -838,13 +838,12 @@ Blog.prototype.logItemHeight = function () {
 	var bottom = parseFloat(styles['marginBottom']);
 
 	this.itemHeight = baseHeight + top + bottom;
-	console.log(document.body.scrollTop);
 }
 
 Blog.prototype.frame = function () {
-	var index = (this.postVisualizations.length -1) - Math.round(document.documentElement.scrollTop / this.itemHeight);
+	var st = (document.documentElement.scrollTop > document.body.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
+	var index = (this.postVisualizations.length -1) - Math.round(st / this.itemHeight);
 	this.postVisualizations[index].frame();
-	console.log(document.documentElement.scrollTop);
 	window.requestAnimationFrame(this.frame.bind(this));
 	// window.addEventListener('click', this.frame.bind(this));
 }
