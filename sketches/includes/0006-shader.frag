@@ -42,18 +42,13 @@ float fractalNoise(vec2 st) {
 	return f;
 }
 
-float distortedFractalNoise(vec2 st) {
-	vec2 q = vec2(fractalNoise(st + vec2(0.0, 0.0)), 
-								fractalNoise(st + vec2(7.3, 3.67)) );
-	vec2 r = vec2(fractalNoise(st + 4.0*q + vec2(1.7, 8.3)),
-								fractalNoise(st + 4.0*q + vec2(sin(time / 5000.0) * 12.52, sin(time / 5000.0) * 5.0432)));
-	return fractalNoise(st + 4.0*r);
-}
-
 void main() {
 	vec2 resolution = vec2(resolutionX, resolutionY);
 	vec4 coord = gl_FragCoord;
-	vec2 st = coord.xy/resolution.xy;
-	float n = distortedFractalNoise(st * 8.0);
-	gl_FragColor = vec4(0.1 + n, n, 1.0, 1.0);
+	vec2 st = (coord.xy/resolution.xy + vec2(1.0, 1.0)) * 10.0;
+	float t = sin(time / 5000.0) / 2.0 + 0.55;
+	st *= fractalNoise(st * t);
+	float n = fractalNoise(st);
+	n = sin(1.0/n);
+	gl_FragColor = vec4(vec3(n), 1.0);
 }

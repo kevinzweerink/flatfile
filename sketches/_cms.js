@@ -1,4 +1,4 @@
-var manifest = ['0001', '0002', '0003', '0004', '0005'];
+var manifest = ['0001', '0002', '0003', '0004', '0005', '0006'];
 
 function Blog(postIds, container) {
 	this.postIds = postIds;
@@ -32,8 +32,6 @@ Blog.prototype.render = function () {
 		return vis;
 	});
 
-	console.log(this.postVisualizations);
-
 	this.logItemHeight();
 }
 
@@ -45,11 +43,13 @@ Blog.prototype.logItemHeight = function () {
 	var bottom = parseFloat(styles['marginBottom']);
 
 	this.itemHeight = baseHeight + top + bottom;
+	console.log(document.body.scrollTop);
 }
 
 Blog.prototype.frame = function () {
-	var index = (this.postVisualizations.length -1) - Math.round(document.body.scrollTop / this.itemHeight);
+	var index = (this.postVisualizations.length -1) - Math.round(document.documentElement.scrollTop / this.itemHeight);
 	this.postVisualizations[index].frame();
+	console.log(document.documentElement.scrollTop);
 	window.requestAnimationFrame(this.frame.bind(this));
 	// window.addEventListener('click', this.frame.bind(this));
 }

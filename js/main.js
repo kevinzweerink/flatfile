@@ -618,6 +618,7 @@ function sketch_0004() {
 	}
 
 	this.doWebGL();
+	this.frame();
 	return this;
 }
 function sketch_0005() {
@@ -655,7 +656,7 @@ function sketch_0005() {
 		gl.shaderSource(vertexShader, vSource);
 		gl.compileShader(vertexShader);
 
-		var fSource = "precision highp float;\n\nuniform float time;\nuniform float resolutionX;\nuniform float resolutionY;\n\nfloat rand2d(vec2 st) {\n\treturn fract(sin(dot(st.xy, vec2(12.9898,78.233) )) * 43758.5453123);\n}\n\nfloat rand(float i) {\n\treturn fract(sin(i) * 43758.5453123);\n} \n\nfloat noise2d(vec2 st) {\n\tvec2 i = floor(st);\n\tvec2 f = fract(st);\n\n\tfloat a = rand2d(i);\n\tfloat b = rand2d( i + vec2(1.0, 0.0));\n\tfloat c = rand2d( i + vec2(0.0, 1.0));\n\tfloat d = rand2d( i + vec2(1.0, 1.0));\n\n\tvec2 u = smoothstep(0.0, 1.0, f);\n\n\treturn mix(a, b, u.x) + \n\t\t\t\t (c - a) * u.y * (1.0 - u.x) + \n\t\t\t\t (d - b) * u.x * u.y; \n}\n\nfloat fractalNoise(vec2 st) {\n\tfloat f = 0.0;\n\tmat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );\n\tf =  0.5000*noise2d( st ); \n\tst = m*st;\n\tf += 0.2500*noise2d( st ); \n\tst = m*st;\n\tf += 0.1250*noise2d( st ); \n\tst = m*st;\n\tf += 0.0625*noise2d( st ); st = m*st;\n\n\treturn f;\n}\n\nfloat distortedFractalNoise(vec2 st) {\n\tvec2 q = vec2(fractalNoise(st + vec2(0.0, 0.0)), \n\t\t\t\t\t\t\t\tfractalNoise(st + vec2(7.3, 3.67)) );\n\tvec2 r = vec2(fractalNoise(st + 4.0*q + vec2(1.7, 8.3)),\n\t\t\t\t\t\t\t\tfractalNoise(st + 4.0*q + vec2(sin(time / 5000.0) * 12.52, cos(time / 5000.0) * 5.0432)));\n\treturn fractalNoise(st + 4.0*r);\n}\n\nvoid main() {\n\tvec2 resolution = vec2(resolutionX, resolutionY);\n\tvec4 coord = gl_FragCoord;\n\tvec2 st = coord.xy/resolution.xy;\n\tfloat n = distortedFractalNoise(st * 8.0);\n\tgl_FragColor = vec4(0.1 + n, n, 1.0, 1.0);\n}";
+		var fSource = "precision highp float;\n\nuniform float time;\nuniform float resolutionX;\nuniform float resolutionY;\n\nfloat rand2d(vec2 st) {\n\treturn fract(sin(dot(st.xy, vec2(12.9898,78.233) )) * 43758.5453123);\n}\n\nfloat rand(float i) {\n\treturn fract(sin(i) * 43758.5453123);\n} \n\nfloat noise2d(vec2 st) {\n\tvec2 i = floor(st);\n\tvec2 f = fract(st);\n\n\tfloat a = rand2d(i);\n\tfloat b = rand2d( i + vec2(1.0, 0.0));\n\tfloat c = rand2d( i + vec2(0.0, 1.0));\n\tfloat d = rand2d( i + vec2(1.0, 1.0));\n\n\tvec2 u = smoothstep(0.0, 1.0, f);\n\n\treturn mix(a, b, u.x) + \n\t\t\t\t (c - a) * u.y * (1.0 - u.x) + \n\t\t\t\t (d - b) * u.x * u.y; \n}\n\nfloat fractalNoise(vec2 st) {\n\tfloat f = 0.0;\n\tmat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );\n\tf =  0.5000*noise2d( st ); \n\tst = m*st;\n\tf += 0.2500*noise2d( st ); \n\tst = m*st;\n\tf += 0.1250*noise2d( st ); \n\tst = m*st;\n\tf += 0.0625*noise2d( st ); st = m*st;\n\n\treturn f;\n}\n\nfloat distortedFractalNoise(vec2 st) {\n\tvec2 q = vec2(fractalNoise(st + vec2(0.0, 0.0)), \n\t\t\t\t\t\t\t\tfractalNoise(st + vec2(7.3, 3.67)) );\n\tvec2 r = vec2(fractalNoise(st + 4.0*q + vec2(1.7, 8.3)),\n\t\t\t\t\t\t\t\tfractalNoise(st + 4.0*q + vec2(sin(time / 5000.0) * 12.52, sin(time / 5000.0) * 5.0432)));\n\treturn fractalNoise(st + 4.0*r);\n}\n\nvoid main() {\n\tvec2 resolution = vec2(resolutionX, resolutionY);\n\tvec4 coord = gl_FragCoord;\n\tvec2 st = coord.xy/resolution.xy;\n\tfloat n = distortedFractalNoise(st * 8.0);\n\tgl_FragColor = vec4(0.1 + n, n, 1.0, 1.0);\n}";
 		var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 		gl.shaderSource(fragmentShader, fSource);
 		gl.compileShader(fragmentShader);
@@ -706,7 +707,93 @@ function sketch_0005() {
 	return this;
 
 }
-var manifest = ['0001', '0002', '0003', '0004', '0005'];
+function sketch_0006() {
+	this.meta = {
+		title : 'Perlin Variation',
+		displayDate : '2015.11.23',
+		id : '0006'
+	}
+
+	this.el = document.getElementById(this.meta.id);
+	this.w = window.innerWidth;
+	this.h = window.innerHeight;
+	this.cx = window.innerWidth/2;
+	this.cy = window.innerHeight/2;
+	this.TAU = Math.PI * 2;
+	this.el.width = this.w;
+	this.el.height = this.h;
+	this.ctx = this.el.getContext('webgl');
+	this.t = 0;
+
+	this.vertices = new Float32Array([
+		-1, -1,
+		1, -1,
+		-1, 1,
+		1, 1,
+		1, -1,
+		-1, 1
+	]);
+
+	this.setupGL = function () {
+		var gl = this.ctx;
+
+		var vSource = "attribute vec2 position;\n\nvoid main() {\n\tgl_Position = vec4(position, 0.0, 1.0);\n}";
+		var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+		gl.shaderSource(vertexShader, vSource);
+		gl.compileShader(vertexShader);
+
+		var fSource = "precision highp float;\n\nuniform float time;\nuniform float resolutionX;\nuniform float resolutionY;\n\nfloat rand2d(vec2 st) {\n\treturn fract(sin(dot(st.xy, vec2(12.9898,78.233) )) * 43758.5453123);\n}\n\nfloat rand(float i) {\n\treturn fract(sin(i) * 43758.5453123);\n} \n\nfloat noise2d(vec2 st) {\n\tvec2 i = floor(st);\n\tvec2 f = fract(st);\n\n\tfloat a = rand2d(i);\n\tfloat b = rand2d( i + vec2(1.0, 0.0));\n\tfloat c = rand2d( i + vec2(0.0, 1.0));\n\tfloat d = rand2d( i + vec2(1.0, 1.0));\n\n\tvec2 u = smoothstep(0.0, 1.0, f);\n\n\treturn mix(a, b, u.x) + \n\t\t\t\t (c - a) * u.y * (1.0 - u.x) + \n\t\t\t\t (d - b) * u.x * u.y; \n}\n\nfloat fractalNoise(vec2 st) {\n\tfloat f = 0.0;\n\tmat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );\n\tf =  0.5000*noise2d( st ); \n\tst = m*st;\n\tf += 0.2500*noise2d( st ); \n\tst = m*st;\n\tf += 0.1250*noise2d( st ); \n\tst = m*st;\n\tf += 0.0625*noise2d( st ); st = m*st;\n\n\treturn f;\n}\n\nvoid main() {\n\tvec2 resolution = vec2(resolutionX, resolutionY);\n\tvec4 coord = gl_FragCoord;\n\tvec2 st = (coord.xy/resolution.xy + vec2(1.0, 1.0)) * 10.0;\n\tfloat t = sin(time / 5000.0) / 2.0 + 0.55;\n\tst *= fractalNoise(st * t);\n\tfloat n = fractalNoise(st);\n\tn = sin(1.0/n);\n\tgl_FragColor = vec4(vec3(n), 1.0);\n}";
+		var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+		gl.shaderSource(fragmentShader, fSource);
+		gl.compileShader(fragmentShader);
+
+		this.program = gl.createProgram();
+		gl.attachShader(this.program, vertexShader);
+		gl.attachShader(this.program, fragmentShader);
+		gl.linkProgram(this.program);
+
+		var buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+		gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.STATIC_DRAW);
+
+		this.program.position = gl.getAttribLocation(this.program, 'position');
+		gl.enableVertexAttribArray(this.program.position);
+		gl.vertexAttribPointer(this.program.position, 2, gl.FLOAT, false, 0, 0);
+
+		this.program.time = gl.getUniformLocation(this.program, 'time');
+
+		this.program.resolutionX = gl.getUniformLocation(this.program, 'resolutionX');
+		this.program.resolutionY = gl.getUniformLocation(this.program, 'resolutionY');
+
+		gl.useProgram(this.program);
+
+		gl.uniform1f(this.program.resolutionX, this.w);
+		gl.uniform1f(this.program.resolutionY, this.h);
+	}
+
+	this.frame = function () {
+		if (this.t) {
+			this.t++
+		} else {
+			this.t = 1;
+		}
+
+		var gl = this.ctx;
+
+		gl.clearColor(0.9,0.9,0.9,1);
+		gl.clear(gl.COLOR_BUFFER_BIT);
+
+		gl.uniform1f(this.program.time, this.t);
+		gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 2)
+	}
+
+	this.setupGL();
+	this.frame();
+
+	return this;
+
+}
+var manifest = ['0001', '0002', '0003', '0004', '0005', '0006'];
 
 function Blog(postIds, container) {
 	this.postIds = postIds;
@@ -740,8 +827,6 @@ Blog.prototype.render = function () {
 		return vis;
 	});
 
-	console.log(this.postVisualizations);
-
 	this.logItemHeight();
 }
 
@@ -753,11 +838,13 @@ Blog.prototype.logItemHeight = function () {
 	var bottom = parseFloat(styles['marginBottom']);
 
 	this.itemHeight = baseHeight + top + bottom;
+	console.log(document.body.scrollTop);
 }
 
 Blog.prototype.frame = function () {
-	var index = (this.postVisualizations.length -1) - Math.round(document.body.scrollTop / this.itemHeight);
+	var index = (this.postVisualizations.length -1) - Math.round(document.documentElement.scrollTop / this.itemHeight);
 	this.postVisualizations[index].frame();
+	console.log(document.documentElement.scrollTop);
 	window.requestAnimationFrame(this.frame.bind(this));
 	// window.addEventListener('click', this.frame.bind(this));
 }

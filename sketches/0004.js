@@ -124,5 +124,6 @@ function sketch_0004() {
 	}
 
 	this.doWebGL();
+	this.frame();
 	return this;
 }
